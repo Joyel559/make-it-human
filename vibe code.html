@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Humanize Your Code</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background: #f4f4f4;
+      color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 90%;
+      max-width: 700px;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: vertical;
+      margin-bottom: 1rem;
+      font-family: monospace;
+    }
+    button {
+      background: #333;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+    button:hover {
+      background: #000;
+    }
+    .output {
+      white-space: pre-wrap;
+      background: #eee;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      position: relative;
+    }
+    .processing {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .copy-status {
+      margin-top: 0.5rem;
+      color: green;
+      font-size: 0.9rem;
+    }
+    .copy-btn {
+      margin-top: 0.5rem;
+    }
+    input[type="file"] {
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Make Code Look Human</h1>
+    <input type="file" id="fileInput">
+    <textarea id="inputCode" placeholder="Paste your code here..."></textarea>
+    <button onclick="humanizeCode()">Humanize</button>
+    <div class="processing" id="processText"></div>
+    <div class="output" id="outputCode"></div>
+    <button class="copy-btn" onclick="copyOutput()">Copy Humanized Code</button>
+    <div id="copyStatus" class="copy-status"></div>
+  </div>
+  <script>
+    function removeCommentsAndVibe(code) {
+      let cleaned = code.replace(/\s*\/\/.*$/gm, '');
+      cleaned = cleaned.replace(/\s*\/\*[\s\S]*?\*\//g, '');
+      cleaned = cleaned.replace(/\n{2,}/g, '\n');
+      return cleaned;
+    }
+
+    function humanizeCode() {
+      const input = document.getElementById('inputCode').value;
+      const processText = document.getElementById('processText');
+      const outputCode = document.getElementById('outputCode');
+      const copyStatus = document.getElementById('copyStatus');
+      copyStatus.textContent = '';
+      processText.textContent = 'Processing... Removing comments and cleaning formatting...';
+      setTimeout(() => {
+        const output = removeCommentsAndVibe(input);
+        outputCode.textContent = output;
+        processText.textContent = 'Done. Your code has been humanized.';
+      }, 1000);
+    }
+
+    function copyOutput() {
+      const text = document.getElementById('outputCode').textContent;
+      const copyStatus = document.getElementById('copyStatus');
+      navigator.clipboard.writeText(text).then(() => {
+        copyStatus.textContent = 'Copied to clipboard!';
+      });
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const reader = new FileReader();
+      reader.onload = function() {
+        document.getElementById('inputCode').value = reader.result;
+      }
+      reader.readAsText(e.target.files[0]);
+    });
+  </script>
+</body>
+</html>
